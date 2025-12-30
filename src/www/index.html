@@ -41,6 +41,19 @@
 
                 <label>Camera</label>
                 <select id="videoSelect"></select>
+
+                <label><i class="mdi mdi-test-tube"></i> Test Preview</label>
+                <button id="testDevices" class="secondary">
+                    Test Devices
+                </button>
+
+                <div class="device-test">
+                    <video id="testVideo" autoplay muted playsinline></video>
+                    <div class="mic-meter">
+                        <div id="micLevel"></div>
+                    </div>
+                </div>
+
             </div>
         </div>
         <video id="remoteVideo" class="remote-video" autoplay playsinline></video>

@@ -25,6 +25,7 @@ usernameElem.addEventListener('change', (event) => {
 })
 
 async function getLocalStream() {
+    stopTest();
     if (localStream) return;
     localStream = await navigator.mediaDevices.getUserMedia({audio: true, video: true});
     localVideo.srcObject = localStream;
@@ -142,7 +143,7 @@ ws.onmessage = async (msg) => {
 
         case "peer-left":
             resetPeerConnection();
-            if(!isCaller){
+            if (!isCaller) {
                 isCaller = true
             }
             remoteVideo.srcObject = null;
@@ -152,6 +153,7 @@ ws.onmessage = async (msg) => {
 
 async function createAndSendOffer() {
     if (!username) return
+
     await getLocalStream();
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
@@ -219,6 +221,11 @@ async function replaceTrack(kind, deviceId) {
     const sender = pc.getSenders().find(s => s.track?.kind === kind);
     if (sender) sender.replaceTrack(newTrack);
 
+    if (!localStream) {
+        // Start Stream?
+        return
+    }
+
     localStream.removeTrack(localStream.getTracks().find(t => t.kind === kind));
     localStream.addTrack(newTrack);
     localVideo.srcObject = localStream;
@@ -253,8 +260,77 @@ function resetPeerConnection() {
     }
 
     status.innerText = `Connection Reset`;
-
-
 }
+
+
+// Media Test
+
+const testBtn = document.getElementById("testDevices");
+const testVideo = document.getElementById("testVideo");
+const micLevel = document.getElementById("micLevel");
+
+let testStream = null;
+let audioContext = null;
+let analyser = null;
+let micSource = null;
+let rafId = null;
+
+testBtn.onclick = testMediaDevices;
+
+async function testMediaDevices() {
+    if(testStream || audioContext){
+        return stopTest();
+    }
+
+    testBtn.innerText = 'Stop Test'
+
+    const audioDeviceId = audioSelect.value;
+    const videoDeviceId = videoSelect.value;
+
+    testStream = await navigator.mediaDevices.getUserMedia({
+        audio: audioDeviceId ? {deviceId: audioDeviceId} : true,
+        video: videoDeviceId ? {deviceId: videoDeviceId} : true
+    });
+
+    // Show test video
+    testVideo.srcObject = testStream;
+
+    // --- Mic level meter ---
+    audioContext = new AudioContext();
+    analyser = audioContext.createAnalyser();
+    analyser.fftSize = 256;
+
+    micSource = audioContext.createMediaStreamSource(testStream);
+    micSource.connect(analyser);
+
+    const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+    function updateMeter() {
+        analyser.getByteFrequencyData(dataArray);
+        const avg = dataArray.reduce((a, b) => a + b, 0) / dataArray.length;
+        const level = Math.min(100, avg * 1.5);
+        micLevel.style.width = `${level}%`;
+        rafId = requestAnimationFrame(updateMeter);
+    }
+
+    updateMeter();
+}
+
+function stopTest() {
+    if (rafId) cancelAnimationFrame(rafId);
+    micLevel.style.width = "0%";
+
+    if (testStream) {
+        testStream.getTracks().forEach(t => t.stop());
+        testStream = null;
+    }
+
+    if (audioContext) {
+        audioContext.close();
+        audioContext = null;
+    }
+    testBtn.innerText = 'Test Devices'
+}
+
 
 loadDevices()

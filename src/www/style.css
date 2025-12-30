@@ -69,6 +69,33 @@ html, body {
 }
 
 
+.device-test {
+    margin-top: 10px;
+}
+
+#testVideo {
+    width: 100%;
+    border-radius: 8px;
+    background: #000;
+}
+
+.mic-meter {
+    margin-top: 6px;
+    height: 6px;
+    background: #333;
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#micLevel {
+    height: 100%;
+    width: 0%;
+    background: #4caf50;
+    transition: width 0.1s linear;
+}
+
+
+/* ==== MAIN CONTENT ==== */
 
 body {
     display: flex;
