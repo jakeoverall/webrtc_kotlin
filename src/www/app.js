@@ -20,7 +20,7 @@ const offcanvas = document.getElementById("offcanvas");
 const wsProtocol = location.protocol === "https:" ? "wss" : "ws";
 const ws = new WebSocket(`${wsProtocol}://${location.host}/signal`);
 
-usernameElem.addEventListener('change', (e) => {
+usernameElem.addEventListener('change', (event) => {
     username = event.target.value
 })
 
@@ -64,7 +64,7 @@ ws.onmessage = async (msg) => {
             joined = true;
             status.innerText = `Connected (${data.role})`;
 
-            if (isCaller && data.peers.length > 0) {
+            if (isCaller && data.peers?.length > 0) {
                 selectedPeer = data.peers[0];
                 await createAndSendOffer();
             }

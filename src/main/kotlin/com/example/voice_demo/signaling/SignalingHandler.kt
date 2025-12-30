@@ -1,6 +1,5 @@
 package com.example.voice_demo.signaling
 
-import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.springframework.web.socket.*
@@ -24,9 +23,9 @@ class SignalingHandler : TextWebSocketHandler() {
         try {
             val payload = mapper.readTree(message.payload)
 
-            val type = payload["type"]?.asText()
-            val roomId = payload["roomId"]?.asText()
-            val from = payload["from"]?.asText()
+            val type = payload["type"]?.asString()
+            val roomId = payload["roomId"]?.asString()
+            val from = payload["from"]?.asString()
 
             if (type == null || roomId == null) {
                 sendError(session, "Missing required fields: type or roomId")
