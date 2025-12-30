@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>WebRTC Voice & Video Room Demo</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@7.4.47/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+<header>
+    <button class="menu-btn" id="menuBtn">
+        <i class="mdi mdi-menu"></i>
+    </button>
+    <div id="roomBadge" class="room-badge">Not connected</div>
+</header>
+<main>
+    <div class="stage">
+        <div id="offcanvas" class="offcanvas">
+            <h3>Meeting</h3>
+
+            <label>Room Code</label>
+            <input id="username" placeholder="Username"/>
+            <input id="roomInput" placeholder="ABC123"/>
+
+            <button id="createRoom">Create Room</button>
+            <button id="joinRoom" class="secondary">Join Room</button>
+
+            <div>
+                <label>Status - <span id="status"></span></label>
+                <label>Users</label>
+                <ul id="userList"></ul>
+            </div>
+
+            <div class="settings">
+                <hr>
+
+                <label>Microphone</label>
+                <select id="audioSelect"></select>
+
+                <label>Camera</label>
+                <select id="videoSelect"></select>
+            </div>
+        </div>
+        <video id="remoteVideo" class="remote-video" autoplay playsinline></video>
+        <video id="localVideo" class="local-video" autoplay muted playsinline></video>
+    </div>
+
+    <div class="controls">
+        <button id="toggleAudio" class="control-btn">
+            <i class="mdi mdi-microphone"></i>
+        </button>
+        <button id="toggleVideo" class="control-btn">
+            <i class="mdi mdi-camera"></i>
+        </button>
+        <button class="control-btn danger" onclick="location.reload()">
+            <i class="mdi mdi-stop"></i>
+        </button>
+    </div>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
